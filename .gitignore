@@ -32,4 +32,5 @@
 *.app
 
 gerber
-
+docs/*.odt
+images
