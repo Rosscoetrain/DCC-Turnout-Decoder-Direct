@@ -22,6 +22,9 @@ https://github.com/Rosscoetrain/DCC-Solenoid-Turnout-Driver
 
 It provides control of up to 8 solenoid turnouts or other solenoid driven devices on model railroads.
 
-This has built in CDU with current limiting to prevent solenoid burnout.
+
+The hardware that this can be used with is here:
+
+https://github.com/Rosscoetrain/RT-Hardware/tree/master/RT_Pulse_8_decoder
 
 
