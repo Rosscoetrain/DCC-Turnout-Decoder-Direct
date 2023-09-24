@@ -12,6 +12,9 @@
 // You can also print other Debug Messages uncommenting the line below
 //#define DEBUG_MSG
 
+// Un-Comment the line below to include learning funciton
+//#define LEARNING
+
 // Un-Comment the line below to force CVs to be written to the Factory Default values
 // defined in the FactoryDefaultCVs below on Start-Up
 //#define FORCE_RESET_FACTORY_DEFAULT_CV
@@ -25,7 +28,7 @@
 #define NUM_TURNOUTS 8                // Set Number of Turnouts (Pairs of Pins)
 #define ACTIVE_OUTPUT_STATE HIGH			// Set the ACTIVE State of the output to Drive the Turnout motor electronics HIGH or LOW 
 
-#define DCC_DECODER_VERSION_NUM 12    // Set the Decoder Version - Used by JMRI to Identify the decoder
+#define DCC_DECODER_VERSION_NUM 10    // Set the Decoder Version - Used by JMRI to Identify the decoder
 
 struct CVPair
 {
@@ -102,6 +105,7 @@ void notifyDccAccTurnoutOutput( uint16_t Addr, uint8_t Direction, uint8_t Output
 
 // check to see if in learning mode and update address
 
+#ifdef LEARNING
   if (learningMode == HIGH) {
 
 //    int H = (Addr - 1) / 64;
@@ -120,7 +124,10 @@ void notifyDccAccTurnoutOutput( uint16_t Addr, uint8_t Direction, uint8_t Output
     Dcc.setCV(CV_ACCESSORY_DECODER_ADDRESS_LSB, L);
 
    }
-  else {
+  else
+#endif
+
+   {
     if(( Addr >= BaseTurnoutAddress ) && ( Addr < (BaseTurnoutAddress + NUM_TURNOUTS )) && OutputPower )
      {
       uint16_t pinIndex = ( (Addr - BaseTurnoutAddress) << 1 ) + Direction ;
@@ -236,6 +243,8 @@ void loop()
   //
   ////////////////////////////////////////////////////////////////
 
+#ifdef LEARNING
+
   learningbuttonVal = dr(LEARNINGBUTTON);
 
   if (learningbuttonOldval != learningbuttonVal) {
@@ -243,7 +252,7 @@ void loop()
     if (learningMode == HIGH) showAcknowledge(3);
    }
   learningbuttonOldval = learningbuttonVal;
-
+#endif
 
 
     // see if there are serial commands
