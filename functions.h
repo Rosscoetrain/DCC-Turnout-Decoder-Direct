@@ -56,9 +56,15 @@ void doSerialCommand(String readString)
     Serial.println(F("Throw a turnout: <T address>"));
 
     Serial.println(F("Set decoder base address: <A address>"));
+#ifdef SINGLE_PULSE
     Serial.println(F("Set decoder output pulse time: <P  mS / 10>"));
-    Serial.println(F("Set decoder CDU recharge time: <R  mS / 10>"));
     Serial.println(F("Set deocder active state: <S  0/1>"));
+#else
+    Serial.println(F("Set decoder output pulse time: <P output  mS / 10>"));
+    Serial.println(F("Set deocder active state: <S output 0/1>"));
+    Serial.println(F("Where output is 1 - 8 as on the decoder pcb"));
+#endif
+    Serial.println(F("Set decoder CDU recharge time: <R  mS / 10>"));
 
 //    Serial.print(F("Change decoder address LSB: <W ")); Serial.print(CV_ACCESSORY_DECODER_ADDRESS_LSB); Serial.println(F(" address>"));
 //    Serial.print(F("Change decoder address MSB: <W ")); Serial.print(CV_ACCESSORY_DECODER_ADDRESS_MSB); Serial.println(F(" address>"));
@@ -86,20 +92,35 @@ void doSerialCommand(String readString)
       Serial.print(F(" = "));
       Serial.println(Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_MSB));
 
+#ifdef SINGLE_PULSE
       Serial.print(F("CV"));
       Serial.print(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME);
       Serial.print(F(" = "));
       Serial.println(Dcc.getCV(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME));
 
       Serial.print(F("CV"));
+      Serial.print(CV_ACCESSORY_DECODER_ACTIVE_STATE);
+      Serial.print(F(" = "));
+      Serial.println(Dcc.getCV(CV_ACCESSORY_DECODER_ACTIVE_STATE));
+#else
+      for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
+       {
+        Serial.print(F("CV"));
+        Serial.print(33 + (i * 2));
+        Serial.print(F(" = "));
+        Serial.println(Dcc.getCV(33 + (i * 2)));
+
+        Serial.print(F("CV"));
+        Serial.print(34 + (i * 2));
+        Serial.print(F(" = "));
+        Serial.println(Dcc.getCV(34 + (i * 2)));
+       }
+#endif
+      Serial.print(F("CV"));
       Serial.print(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME);
       Serial.print(F(" = "));
       Serial.println(Dcc.getCV(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME));
 
-      Serial.print(F("CV"));
-      Serial.print(CV_ACCESSORY_DECODER_ACTIVE_STATE);
-      Serial.print(F(" = "));
-      Serial.println(Dcc.getCV(CV_ACCESSORY_DECODER_ACTIVE_STATE));
 
      }
     else
@@ -120,7 +141,7 @@ void doSerialCommand(String readString)
           if ( itemCount == 2)
            {
             int addr = splitter->getItemAtIndex(1).toInt();
-            notifyDccAccTurnoutOutput( addr, 1, 1 );
+            notifyDccAccTurnoutOutput( addr, 0, 1 );
            }
           else
            {
@@ -141,7 +162,7 @@ void doSerialCommand(String readString)
           if ( itemCount == 2)
            {
             int addr = splitter->getItemAtIndex(1).toInt();
-            notifyDccAccTurnoutOutput( addr, 0, 1 );
+            notifyDccAccTurnoutOutput( addr, 1, 1 );
            }
           else
            {
@@ -185,21 +206,30 @@ void doSerialCommand(String readString)
           splitter = NULL;
          }
 
+/*
+ * command to set output pulse time.
+ * The value here is the number of milliseconds / 10
+ * ie 100ms/10 = 10.
+ * 
+ */
 
         if (readString.startsWith("<P"))
          {
           StringSplitter *splitter = new StringSplitter(readString, ' ', 3);  // new StringSplitter(string_to_split, delimiter, limit)
           int itemCount = splitter->getItemCount();
 
+
+#ifdef SINGLE_PULSE
           if ( itemCount == 2)
            {
-            int addr = splitter->getItemAtIndex(1).toInt();
+            int value = splitter->getItemAtIndex(1).toInt();
 
 #ifdef DEBUG_MSG
-            Serial.print(F("Value = ")); Serial.println(addr);
+            Serial.print(F("Value = ")); Serial.println(value);
 #endif
 
-            Dcc.setCV(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME, addr);
+           {
+              Dcc.setCV(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME, value);
            }
           else
            {
@@ -209,6 +239,39 @@ void doSerialCommand(String readString)
           splitter = NULL;
          }
 
+#else
+          if ( itemCount == 3)
+           {
+            int addr = splitter->getItemAtIndex(1).toInt();
+            int value = splitter->getItemAtIndex(2).toInt();
+
+#ifdef DEBUG_MSG
+            Serial.print(F("Adress = ")); Serial.println(addr);
+            Serial.print(F("Value = ")); Serial.println(value);
+#endif
+            if ( addr >= 1 && addr <= 8 )
+             {
+              Dcc.setCV(33 + (addr - 1) * 2, value);
+             }
+            else
+             {
+              Serial.println(F("Invalid output: should be 1 to 8"));
+             }
+           }
+          else
+           {
+            Serial.println(F("Invalid command: should be <P output ms/10>"));
+           }
+          delete splitter;
+          splitter = NULL;
+         }
+#endif
+
+/*
+ * delay time for the CDU to recharge
+ * The value here is the number of milliseconds / 10
+ * ie 300ms/10 = 30
+ */
 
         if (readString.startsWith("<R"))
          {
@@ -227,27 +290,40 @@ void doSerialCommand(String readString)
            }
           else
            {
-            Serial.println(F("Invalid command: should be <U ms/10>"));
+            Serial.println(F("Invalid command: should be <R ms/10>"));
            }
           delete splitter;
           splitter = NULL;
          }
 
+/*
+ * the output state
+ * 1 = high for output
+ * 0 = low for output
+ */
 
         if (readString.startsWith("<S"))
          {
           StringSplitter *splitter = new StringSplitter(readString, ' ', 3);  // new StringSplitter(string_to_split, delimiter, limit)
           int itemCount = splitter->getItemCount();
 
+#ifdef SINGLE_PULSE
           if (itemCount == 2)
            {
-            int addr = splitter->getItemAtIndex(1).toInt();
+            int value = splitter->getItemAtIndex(1).toInt();
 
 #ifdef DEBUG_MSG
-            Serial.print(F("Value = ")); Serial.println(addr);
+            Serial.print(F("Value = ")); Serial.println(value);
 #endif
 
-            Dcc.setCV(CV_ACCESSORY_DECODER_ACTIVE_STATE, addr);
+            if ( value == 0 || value == 1 )
+             {
+              Dcc.setCV(CV_ACCESSORY_DECODER_ACTIVE_STATE, value);
+             }
+            else
+             {
+              Serial.println(F("Invalid value: state should be 0 or 1"));
+             }
            }
           else
            {
@@ -256,6 +332,27 @@ void doSerialCommand(String readString)
           delete splitter;
           splitter = NULL;
          }
+#else
+          if (itemCount == 3)
+           {
+            int addr = splitter->getItemAtIndex(1).toInt();
+            int value = splitter->getItemAtIndex(2).toInt();
+
+#ifdef DEBUG_MSG
+            Serial.print(F("Address = ")); Serial.println(addr);
+            Serial.print(F("Value = ")); Serial.println(value);
+#endif
+
+            Dcc.setCV(34 + (addr - 1) * 2, value);
+           }
+          else
+           {
+            Serial.println(F("Invalid command: should be <S address 0> or <S address 1>"));
+           }
+          delete splitter;
+          splitter = NULL;
+         }
+#endif
 
 
 /*              

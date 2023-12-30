@@ -2,11 +2,21 @@
 
 #define PIN_PULSER_SLOT_EMPTY 255
 
+#ifdef SINGLE_PULSE
 void PinPulser::init(uint16_t onMs, uint16_t cduRechargeMs, uint8_t activeOutputState)
+#else
+void PinPulser::init(uint16_t &onMs, uint16_t cduRechargeMs, uint8_t &activeOutputState)
+#endif
 {
+#ifdef SINGLE_PULSE
   this->onMs = onMs;
-  this->cduRechargeMs = cduRechargeMs;
   this->activeOutputState = activeOutputState;
+#else
+  this->onMs = onMs;
+  this->activeOutputState = activeOutputState;
+#endif
+
+  this->cduRechargeMs = cduRechargeMs;
   state = PP_IDLE;
   targetMs = 0;
   memset(pinQueue, PIN_PULSER_SLOT_EMPTY, PIN_PULSER_MAX_PINS + 1);
@@ -47,9 +57,14 @@ PP_State PinPulser::process(void)
     if(pinQueue[0] != PIN_PULSER_SLOT_EMPTY)
     {
 //      Serial.print(" PinPulser::process: PP_IDLE: Pin: "); Serial.println(pinQueue[0],DEC);
-      
+
+#ifdef SINGLE_PULSE
       digitalWrite(pinQueue[0], activeOutputState);
       targetMs = millis() + onMs;
+#else
+      digitalWrite(pinQueue[0], activeOutputState[pinQueue[0]/2]);
+      targetMs = millis() + onMs[pinQueue[0]/2];
+#endif
       state = PP_OUTPUT_ON_DELAY;
     }
     break;
@@ -59,14 +74,18 @@ PP_State PinPulser::process(void)
     if(now >= targetMs)
     {
 //      Serial.print(" PinPulser::process: PP_OUTPUT_ON_DELAY: Done Deactivate Pin: "); Serial.println(pinQueue[0],DEC);
-      
+
+#ifdef SINGLE_PULSE
       digitalWrite(pinQueue[0], !activeOutputState);
+#else
+      digitalWrite(pinQueue[0], !activeOutputState[pinQueue[0]/2]);
+#endif
       targetMs = now + cduRechargeMs;
       memmove(pinQueue, pinQueue + 1, PIN_PULSER_MAX_PINS);
       state = PP_CDU_RECHARGE_DELAY;
     }
     break;
-      
+
   case PP_CDU_RECHARGE_DELAY:
     now = millis();
     if(now >= targetMs)
@@ -89,3 +108,7 @@ PP_State PinPulser::process(void)
   }
   return state;
 }
+
+
+
+  
