@@ -5,122 +5,13 @@
 
 #include "defines.h"
 
-/*
-
-// You can print every DCC packet by un-commenting the line below
-//#define NOTIFY_DCC_MSG
-
-// You can print every notifyDccAccTurnoutOutput call-back by un-commenting the line below
-#define NOTIFY_TURNOUT_MSG
-
-// You can also print other Debug Messages uncommenting the line below
-#define DEBUG_MSG
-
-// Un-Comment the line below to include learning funciton
-//#define LEARNING
-
-// Un-Comment the line below to force CVs to be written to the Factory Default values
-// defined in the FactoryDefaultCVs below on Start-Up
-// THIS NEEDS to be un-commented and uploaded once to setup the eeprom
-// after uploading comment out the line and upload again for normal operation
-//#define FORCE_RESET_FACTORY_DEFAULT_CV
-
-// Un-Comment the line below to Enable DCC ACK for Service Mode Programming Read CV Capablilty 
-//#define ENABLE_DCC_ACK  15  // This is A1 on the Iowa Scaled Engineering ARD-DCCSHIELD DCC Shield
-
-// Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_SMT board.
-//#define SMT_BOARD
-
-// Un-Comment the line below to use a single output pulse time.
-// The pulse time will be the same for all addresses
-// Need to define this in PinPulser.h as well
-//
-//#define SINGLE_PULSE
-*/
 
 #include <NmraDcc.h>
 #include "PinPulser.h"
 
 /*
-
-// Define the Arduino input Pin number for the DCC Signal 
-#define DCC_PIN     2
-
-#define NUM_TURNOUTS 8                // Set Number of Turnouts (Pairs of Pins)
-#define ACTIVE_OUTPUT_STATE HIGH			// Set the ACTIVE State of the output to Drive the Turnout motor electronics HIGH or LOW 
-
-#define DCC_DECODER_VERSION_NUM 10    // Set the Decoder Version - Used by JMRI to Identify the decoder
-
-*/
-
-/*
-struct CVPair
-{
-  uint16_t  CV;
-  uint8_t   Value;
-};
-*/
-
-#define CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME 2  // CV for the Output Pulse ON ms
-#define CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME 3  // CV for the delay in ms to allow a CDU to recharge
-#define CV_ACCESSORY_DECODER_ACTIVE_STATE      4  // CV to define the ON Output State 
-
-// To set the Turnout Addresses for this board you need to change the CV values for CV1 (CV_ACCESSORY_DECODER_ADDRESS_LSB) and 
-// CV9 (CV_ACCESSORY_DECODER_ADDRESS_MSB) in the FactoryDefaultCVs structure below. The Turnout Addresses are defined as: 
-// Base Turnout Address is: ((((CV9 * 64) + CV1) - 1) * 4) + 1 
-// With NUM_TURNOUTS 8 (above) a CV1 = 1 and CV9 = 0, the Turnout Addresses will be 1..8, for CV1 = 2 the Turnout Address is 5..12
-
-/*
-CVPair FactoryDefaultCVs [] =
-{
-  {CV_ACCESSORY_DECODER_ADDRESS_LSB, DEFAULT_ACCESSORY_DECODER_ADDRESS & 0xFF},
-  {CV_ACCESSORY_DECODER_ADDRESS_MSB, DEFAULT_ACCESSORY_DECODER_ADDRESS >> 8},
-  {CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME, 50},   // x 10mS for the output pulse duration
-  {CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME, 30},   // x 10mS for the CDU recharge delay time
-  {CV_ACCESSORY_DECODER_ACTIVE_STATE,    ACTIVE_OUTPUT_STATE},
-  {CV_29_CONFIG, CV29_ACCESSORY_DECODER},
-};
-
-uint8_t FactoryDefaultCVIndex = 0;
-
-// This is the Arduino Pin Mapping to Turnout Addresses with 2 pins per turnout 
-// A1 is missing in the sequence as it is used for the DCC ACK
-// The Pins are defined in Pairs T=Thrown, C=Closed (Digitrax Notation)  
-//   base address 1T 1C 2T 2C 3T 3C 4T  4C  5T  5C  6T  6C  7T  7C  8T  8C
-#ifndef SMT_BOARD
-//byte outputs[] = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19};
-//     pins         D3 D4 D5 D6 D7 D8 D9 D10 D11 D12 D13  A0  A2  A3  A4  A5  
-byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 17, 16, 19, 18};
-//   pins         D4 D3 D6 D5 D8 D7 D10 D9 D12 D11  A0 D13  A3  A2  A5  A4
-#else
-byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 11, 12, 14, 13, 17, 16, 19, 18};
-//   pins         D4 D3 D6 D5 D8 D7 D10 D9 D11 D12  A0 D13  A3  A2  A5  A4
-#endif
-*/
-
-
-/*
-
-NmraDcc  Dcc ;
-DCC_MSG  Packet ;
-PinPulser pinPulser;
-
-uint16_t BaseTurnoutAddress;
-*/
-
-
-/*
  * Rosscoe Train functions and variables
  */
-/*
-// for address learning mode
-int LEARNINGBUTTON = A6;    // pin A6
-#define LEDCONTROL LED_BUILTIN
-int learningMode = LOW;
-
-// buffer to hold serial commands
-String readString;
-*/
 
 #include "variables.h"
 
