@@ -1,9 +1,5 @@
 #include <Arduino.h>
 
-// if only using single on pulse value leave following uncommented
-//#define SINGLE_PULSE
-
-#define NUM_TURNOUTS 8
 
 #define PIN_PULSER_MAX_PINS    16
 

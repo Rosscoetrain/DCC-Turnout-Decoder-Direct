@@ -3,6 +3,13 @@
  */
 
 
+struct CVPair
+{
+  uint16_t  CV;
+  uint8_t   Value;
+};
+
+
 /*
  * to use individual CV's for each address output requires two CV's
  * one for the pulse time
@@ -76,3 +83,21 @@ byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 17, 16, 19, 18};
 byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 11, 12, 14, 13, 17, 16, 19, 18};
 //   pins         D4 D3 D6 D5 D8 D7 D10 D9 D11 D12  A0 D13  A3  A2  A5  A4
 #endif
+
+NmraDcc  Dcc ;
+DCC_MSG  Packet ;
+PinPulser pinPulser;
+
+uint16_t BaseTurnoutAddress;
+
+
+/*
+ * Rosscoe Train functions and variables
+ */
+// for address learning mode
+int LEARNINGBUTTON = A6;    // pin A6
+#define LEDCONTROL LED_BUILTIN
+int learningMode = LOW;
+
+// buffer to hold serial commands
+String readString;

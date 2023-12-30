@@ -1,7 +1,11 @@
-#include <NmraDcc.h>
-#include "PinPulser.h"
+
 // This is a DCC Accessory Decoder to drive 8 Pulsed Turnouts
 // Based on the NMRA Pulsed 8 stationary decoder
+
+
+#include "defines.h"
+
+/*
 
 // You can print every DCC packet by un-commenting the line below
 //#define NOTIFY_DCC_MSG
@@ -32,8 +36,12 @@
 // Need to define this in PinPulser.h as well
 //
 //#define SINGLE_PULSE
+*/
 
+#include <NmraDcc.h>
+#include "PinPulser.h"
 
+/*
 
 // Define the Arduino input Pin number for the DCC Signal 
 #define DCC_PIN     2
@@ -43,11 +51,15 @@
 
 #define DCC_DECODER_VERSION_NUM 10    // Set the Decoder Version - Used by JMRI to Identify the decoder
 
+*/
+
+/*
 struct CVPair
 {
   uint16_t  CV;
   uint8_t   Value;
 };
+*/
 
 #define CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME 2  // CV for the Output Pulse ON ms
 #define CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME 3  // CV for the delay in ms to allow a CDU to recharge
@@ -57,8 +69,6 @@ struct CVPair
 // CV9 (CV_ACCESSORY_DECODER_ADDRESS_MSB) in the FactoryDefaultCVs structure below. The Turnout Addresses are defined as: 
 // Base Turnout Address is: ((((CV9 * 64) + CV1) - 1) * 4) + 1 
 // With NUM_TURNOUTS 8 (above) a CV1 = 1 and CV9 = 0, the Turnout Addresses will be 1..8, for CV1 = 2 the Turnout Address is 5..12
-
-#include "variables.h"
 
 /*
 CVPair FactoryDefaultCVs [] =
@@ -89,16 +99,20 @@ byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 11, 12, 14, 13, 17, 16, 19, 18};
 */
 
 
+/*
+
 NmraDcc  Dcc ;
 DCC_MSG  Packet ;
 PinPulser pinPulser;
-uint16_t BaseTurnoutAddress;
 
+uint16_t BaseTurnoutAddress;
+*/
 
 
 /*
  * Rosscoe Train functions and variables
  */
+/*
 // for address learning mode
 int LEARNINGBUTTON = A6;    // pin A6
 #define LEDCONTROL LED_BUILTIN
@@ -106,6 +120,9 @@ int learningMode = LOW;
 
 // buffer to hold serial commands
 String readString;
+*/
+
+#include "variables.h"
 
 #include "functions.h"
 
@@ -372,3 +389,6 @@ void notifyDccMsg( DCC_MSG * Msg)
   Serial.println();
 }
 #endif
+
+
+  

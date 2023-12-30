@@ -92,6 +92,12 @@ void doSerialCommand(String readString)
       Serial.print(F(" = "));
       Serial.println(Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_MSB));
 
+      Serial.print(F("CV"));
+      Serial.print(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME);
+      Serial.print(F(" = "));
+      Serial.println(Dcc.getCV(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME));
+
+
 #ifdef SINGLE_PULSE
       Serial.print(F("CV"));
       Serial.print(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME);
@@ -116,10 +122,6 @@ void doSerialCommand(String readString)
         Serial.println(Dcc.getCV(34 + (i * 2)));
        }
 #endif
-      Serial.print(F("CV"));
-      Serial.print(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME);
-      Serial.print(F(" = "));
-      Serial.println(Dcc.getCV(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME));
 
 
      }
