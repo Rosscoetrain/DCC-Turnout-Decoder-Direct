@@ -29,7 +29,6 @@
 
 // Un-Comment the line below to use a single output pulse time.
 // The pulse time will be the same for all addresses
-// Need to define this in PinPulser.h as well
 //
 //#define SINGLE_PULSE
 

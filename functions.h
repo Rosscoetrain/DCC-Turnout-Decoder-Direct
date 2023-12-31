@@ -3,6 +3,11 @@
  */
 
 
+/*
+ * a function to read an analogue pin and return a boolean value depending on reading.
+ * works the same as doing a digital read on a digital pin
+ * > 512 = TRUE, <= 512 = FALSE
+ */
 
 bool dr (int pin)
  {
@@ -28,8 +33,7 @@ void showAcknowledge(int nb) {
 #include "StringSplitter.h"
 
 
-void(* resetFunc) (void) = 0;//declare reset function at address 0
-
+void(* resetFunc) (void) = 0;                     // declare reset function at address 0
 
 
 void doSerialCommand(String readString)
@@ -38,7 +42,7 @@ void doSerialCommand(String readString)
 
   readString.trim();
 
-  Serial.println(readString);  //so you can see the captured string
+  Serial.println(readString);                    // so you can see the captured string
 
   if (readString == "<Z>")
    {
@@ -65,7 +69,7 @@ void doSerialCommand(String readString)
     Serial.println(F("Where output is 1 - 8 as on the decoder pcb"));
 #endif
     Serial.println(F("Set decoder CDU recharge time: <R  mS / 10>"));
-
+ 
 //    Serial.print(F("Change decoder address LSB: <W ")); Serial.print(CV_ACCESSORY_DECODER_ADDRESS_LSB); Serial.println(F(" address>"));
 //    Serial.print(F("Change decoder address MSB: <W ")); Serial.print(CV_ACCESSORY_DECODER_ADDRESS_MSB); Serial.println(F(" address>"));
 //    Serial.print(F("Set decoder output pulse time: <W ")); Serial.print(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME); Serial.println(F(" mS / 10>"));
@@ -229,8 +233,7 @@ void doSerialCommand(String readString)
 #ifdef DEBUG_MSG
             Serial.print(F("Value = ")); Serial.println(value);
 #endif
-
-           {
+      
               Dcc.setCV(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME, value);
            }
           else

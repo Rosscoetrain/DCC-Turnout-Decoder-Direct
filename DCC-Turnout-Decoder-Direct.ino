@@ -99,7 +99,7 @@ void initPinPulser(void)
 
 #ifdef DEBUG_MSG
   Serial.print("initPinPulser: DCC Turnout Base Address: "); Serial.print(BaseTurnoutAddress, DEC);
-  Serial.print(" CDU Recharge: "); Serial.print(cduRechargeMs);
+  Serial.print(" CDU Recharge: "); Serial.println(cduRechargeMs);
 #ifdef SINGLE_PULSE
   Serial.print(" Active Pulse: "); Serial.print(onMs);  
   Serial.print("ms Active Output State: "); Serial.println(activeOutputState ? "HIGH" : "LOW" );
@@ -121,7 +121,7 @@ void initPinPulser(void)
 #ifdef SINGLE_PULSE
   pinPulser.init(onMs, cduRechargeMs, activeOutputState);
 #else
-  pinPulser.init(*onMs, cduRechargeMs, *activeOutputState);
+  pinPulser.init(onMs, cduRechargeMs, activeOutputState);
 #endif
 }
 

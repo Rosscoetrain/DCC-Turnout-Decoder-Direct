@@ -1,5 +1,8 @@
 #include <Arduino.h>
 
+#include "defines.h"
+
+// this is the maximum number of output pins
 
 #define PIN_PULSER_MAX_PINS    16
 
@@ -13,23 +16,26 @@ enum PP_State
 class PinPulser
 {
   private:
-#ifdef SINGLE_PULSE
-    uint16_t      onMs;
-    uint8_t       activeOutputState = HIGH;
-#else
-    uint16_t *    onMs;
-    uint8_t *     activeOutputState;
-#endif
     uint16_t      cduRechargeMs;
     PP_State      state = PP_IDLE;
     unsigned long targetMs = 0;
     uint8_t       pinQueue[PIN_PULSER_MAX_PINS + 1];
 
+
+#ifdef SINGLE_PULSE
+    uint16_t      onMs;
+    uint8_t       activeOutputState = HIGH;
+#else
+    uint16_t      *onMs;
+    uint8_t       *activeOutputState;
+#endif
+
   public:
 #ifdef SINGLE_PULSE
     void init(uint16_t onMs, uint16_t cduRechargeMs, uint8_t activeOutputState);
 #else
-    void init(uint16_t &onMs, uint16_t cduRechargeMs, uint8_t &activeOutputState);
+//    void init(uint16_t &onMs, uint16_t cduRechargeMs, uint8_t &activeOutputState);
+    void init(uint16_t onMs[], uint16_t cduRechargeMs, uint8_t activeOutputState[]);
 #endif
     uint8_t addPin(uint8_t pin);
     PP_State process(void);

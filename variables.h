@@ -73,7 +73,7 @@ uint8_t FactoryDefaultCVIndex = 0;
 // This is the Arduino Pin Mapping to Turnout Addresses with 2 pins per turnout 
 // A1 is missing in the sequence as it is used for the DCC ACK
 // The Pins are defined in Pairs T=Thrown, C=Closed (Digitrax Notation)  
-//   base address 1C 1T 2C 2T 3C 3T 4C 4T 5C  5T  6C  6T  7C  7T  8C  8T
+//   base address 1C 1T 2C 2T 3C 3T  4C 4T  5C  5T  6C  6T  7C  7T  8C  8T
 #ifndef SMT_BOARD
 //byte outputs[] = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19};
 //     pins         D3 D4 D5 D6 D7 D8 D9 D10 D11 D12 D13  A0  A2  A3  A4  A5  
