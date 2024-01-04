@@ -2,6 +2,26 @@
  * defines.h
  */
 
+/*
+ *  © 2023 Ross Scanlon
+ *
+ *  This is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2.1 of the License, or
+ *  (at your option) any later version.
+ *
+ *  It is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this code.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+
+#ifndef DEFINES_H
+#define DEFINES_H
 
 // You can print every DCC packet by un-commenting the line below
 //#define NOTIFY_DCC_MSG
@@ -10,7 +30,7 @@
 #define NOTIFY_TURNOUT_MSG
 
 // You can also print other Debug Messages uncommenting the line below
-#define DEBUG_MSG
+//#define DEBUG_MSG
 
 // Un-Comment the line below to include learning funciton
 //#define LEARNING
@@ -52,5 +72,7 @@
 #define CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME 3  // CV for the delay in ms to allow a CDU to recharge
 #define CV_ACCESSORY_DECODER_ACTIVE_STATE      4  // CV to define the ON Output State 
 
+#endif
 
+  
   

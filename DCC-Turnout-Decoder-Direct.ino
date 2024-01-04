@@ -1,3 +1,19 @@
+/*
+ *  © 2023 Ross Scanlon
+ *
+ *  This is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2.1 of the License, or
+ *  (at your option) any later version.
+ *
+ *  It is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this code.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 // This is a DCC Accessory Decoder to drive 8 Pulsed Turnouts
 // Based on the NMRA Pulsed 8 stationary decoder
@@ -13,9 +29,12 @@
  * Rosscoe Train functions and variables
  */
 
+#include "version.h"
+
 #include "variables.h"
 
 #include "functions.h"
+
 
 /*
  * RT end
@@ -84,27 +103,33 @@ void initPinPulser(void)
   uint16_t cduRechargeMs     = Dcc.getCV(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME) * 10;
 
 #ifdef SINGLE_PULSE
-  uint16_t onMs              = Dcc.getCV(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME) * 10;
-  uint8_t  activeOutputState = Dcc.getCV(CV_ACCESSORY_DECODER_ACTIVE_STATE);
+  onMs              = Dcc.getCV(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME) * 10;
+  activeOutputState = Dcc.getCV(CV_ACCESSORY_DECODER_ACTIVE_STATE);
 #else
-  uint16_t onMs[NUM_TURNOUTS] = {};
-  uint8_t activeOutputState[NUM_TURNOUTS] = {};
+//  uint16_t onMs[NUM_TURNOUTS] = {};
+//  uint8_t activeOutputState[NUM_TURNOUTS] = {};
 // read the CV's for each address
   for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
   {
     onMs[i] = Dcc.getCV( 33 + ( i * 2 ) ) * 10;
     activeOutputState[i]  = Dcc.getCV( 34 + ( i * 2 ) );
+#ifdef DEBUG_MSG
+    Serial.print(F(" i : "));Serial.print(i);
+    Serial.print(F(" onMs : "));Serial.print(onMs[i]);
+    Serial.print(F(" activeOutputState : "));Serial.println(activeOutputState[i]);
+#endif
+
   }
 #endif
 
-#ifdef DEBUG_MSG
-  Serial.print("initPinPulser: DCC Turnout Base Address: "); Serial.print(BaseTurnoutAddress, DEC);
-  Serial.print(" CDU Recharge: "); Serial.println(cduRechargeMs);
+//#ifdef DEBUG_MSG
+  Serial.print(F("initPinPulser: DCC Turnout Base Address: ")); Serial.print(BaseTurnoutAddress, DEC);
+  Serial.print(F(" CDU Recharge: ")); Serial.println(cduRechargeMs);
 #ifdef SINGLE_PULSE
-  Serial.print(" Active Pulse: "); Serial.print(onMs);  
-  Serial.print("ms Active Output State: "); Serial.println(activeOutputState ? "HIGH" : "LOW" );
+  Serial.print(F(" Active Pulse: ")); Serial.print(onMs);  
+  Serial.print(F("ms Active Output State: ")); Serial.println(activeOutputState ? "HIGH" : "LOW" );
 #endif
-#endif  
+//#endif  
 
   // Step through all the Turnout Driver pins setting them to OUTPUT and NOT Active State
   for(uint8_t i = 0; i < (NUM_TURNOUTS * 2); i++)
@@ -121,7 +146,10 @@ void initPinPulser(void)
 #ifdef SINGLE_PULSE
   pinPulser.init(onMs, cduRechargeMs, activeOutputState);
 #else
-  pinPulser.init(onMs, cduRechargeMs, activeOutputState);
+  pinPulser.init(onMs, cduRechargeMs, activeOutputState, outputs);
+
+  pinPulser.printArrays();
+
 #endif
 }
 
@@ -135,6 +163,9 @@ void setup()
   // Setup which External Interrupt, the Pin it's associated with that we're using and enable the Pull-Up
   // Many Arduino Cores now support the digitalPinToInterrupt() function that makes it easier to figure out the
   // Interrupt Number for the Arduino Pin number, which reduces confusion. 
+
+  setVersion();
+
 #ifdef digitalPinToInterrupt
   Dcc.pin(DCC_PIN, 0);
 #else
@@ -144,10 +175,22 @@ void setup()
   // Call the main DCC Init function to enable the DCC Receiver
   Dcc.init( MAN_ID_DIY, DCC_DECODER_VERSION_NUM, FLAGS_OUTPUT_ADDRESS_MODE | FLAGS_DCC_ACCESSORY_DECODER, 0 );
 
-#ifdef DEBUG_MSG
+//#ifdef DEBUG_MSG
 //  Serial.print("\nNMRA DCC 8-Turnout Accessory Decoder. Ver: "); Serial.println(DCC_DECODER_VERSION_NUM,DEC);
-  Serial.print("Rosscoe Train DCC 8 Turnout Accessory Decoder. Ver: "); Serial.println(DCC_DECODER_VERSION_NUM,DEC);
-#endif  
+  Serial.print("Rosscoe Train DCC 8 Turnout Accessory Decoder. ");
+
+  Serial.print(F("Version: "));
+  Serial.print(versionBuffer[0]);
+  Serial.print(F("."));
+  Serial.print(versionBuffer[1]);
+  Serial.print(F("."));
+  Serial.println(versionBuffer[2]);
+
+  
+  Serial.println();
+
+
+//#endif
 
 #ifdef FORCE_RESET_FACTORY_DEFAULT_CV
   Serial.println("Resetting CVs to Factory Defaults");
