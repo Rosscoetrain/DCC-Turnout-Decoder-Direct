@@ -59,6 +59,10 @@
 #define NUM_TURNOUTS 8                // Set Number of Turnouts (Pairs of Pins)
 #define ACTIVE_OUTPUT_STATE HIGH      // Set the ACTIVE State of the output to Drive the Turnout motor electronics HIGH or LOW 
 
+#define DEFAULT_PULSE 10              // the default pulse ms/10
+
+#define DEFAULT_RECHARGE 30           // the default CDU recharge time ms/10
+
 #define DCC_DECODER_VERSION_NUM 10    // Set the Decoder Version - Used by JMRI to Identify the decoder
 
 
