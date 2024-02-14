@@ -31,10 +31,12 @@
 *.out
 *.app
 
+
 gerber
 docs/*.odt
 images
 _old/
 
+lib
 examples
 
