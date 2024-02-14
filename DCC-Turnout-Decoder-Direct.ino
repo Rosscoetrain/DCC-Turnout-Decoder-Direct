@@ -203,7 +203,9 @@ void setup()
 
 void loop()
 {
+#ifdef LEARNING
   static int learningbuttonOldval = 0,learningbuttonVal = 0;
+#endif
 
   // You MUST call the NmraDcc.process() method frequently from the Arduino loop() function for correct library operation
   Dcc.process();

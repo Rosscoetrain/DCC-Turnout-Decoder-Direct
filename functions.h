@@ -77,7 +77,7 @@ void(* resetFunc) (void) = 0;                     // declare reset function at a
 
 void doSerialCommand(String readString)
  {
-  byte p = 0;
+//  byte p = 0;
 
   readString.trim();
 
@@ -172,7 +172,7 @@ void doSerialCommand(String readString)
      {
       if (readString.startsWith("<"))
        {
-        int pos = 0;
+//        int pos = 0;
         // this is where commands are completed
 
         // command to close turnout <C address>

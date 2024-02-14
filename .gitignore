@@ -35,3 +35,6 @@ gerber
 docs/*.odt
 images
 _old/
+
+examples
+
