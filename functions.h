@@ -104,7 +104,7 @@ void doSerialCommand(String readString)
     Serial.println(F("Set deocder active state: <S  0/1>"));
 #else
     Serial.println(F("Set decoder output pulse time: <P output  mS / 10>"));
-    Serial.println(F("Set deocder active state: <S output 0/1>"));
+    Serial.println(F("Set decoder active state: <S output 0/1>"));
     Serial.println(F("Where output is 1 - 8 as on the decoder pcb"));
 #endif
     Serial.println(F("Set decoder CDU recharge time: <R  mS / 10>"));
