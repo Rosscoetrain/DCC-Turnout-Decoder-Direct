@@ -27,12 +27,12 @@
 //#define NOTIFY_DCC_MSG
 
 // You can print every notifyDccAccTurnoutOutput call-back by un-commenting the line below
-#define NOTIFY_TURNOUT_MSG
+//#define NOTIFY_TURNOUT_MSG
 
 // You can also print other Debug Messages uncommenting the line below
 //#define DEBUG_MSG
 
-// Un-Comment the line below to include learning funciton
+// Un-Comment the line below to include learning function
 //#define LEARNING
 
 // Un-Comment the line below to force CVs to be written to the Factory Default values
