@@ -86,6 +86,10 @@ CVPair FactoryDefaultCVs [] =
   {48, ACTIVE_OUTPUT_STATE},
 #endif
 
+  {CV_ACCESSORY_DECODER_SERIAL_LSB, uint8_t(SERIAL_NUMBER - (SERIAL_NUMBER * 256))},
+  {CV_ACCESSORY_DECODER_SERIAL_MSB, uint8_t(SERIAL_NUMBER / 256)},
+  
+
 };
 
 
@@ -96,14 +100,33 @@ uint8_t FactoryDefaultCVIndex = 0;
 // A1 is missing in the sequence as it is used for the DCC ACK
 // The Pins are defined in Pairs T=Thrown, C=Closed (Digitrax Notation)  
 //   base address 1C 1T 2C 2T 3C 3T  4C 4T  5C  5T  6C  6T  7C  7T  8C  8T
-#ifndef SMT_BOARD
-//byte outputs[] = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19};
-//     pins         D3 D4 D5 D6 D7 D8 D9 D10 D11 D12 D13  A0  A2  A3  A4  A5  
-byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 17, 16, 19, 18};
-//   pins         D4 D3 D6 D5 D8 D7 D10 D9 D12 D11  A0 D13  A3  A2  A5  A4
-#else
+#ifdef NANO_SMT_BOARD
+
+//   base address 1C 1T 2C 2T 3C 3T  4C 4T  5C  5T  6C  6T  7C  7T  8C  8T
 byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 11, 12, 14, 13, 17, 16, 19, 18};
 //   pins         D4 D3 D6 D5 D8 D7 D10 D9 D11 D12  A0 D13  A3  A2  A5  A4
+
+#elif ARDUINO_ARCH_ESP32
+
+// this is the ESP32-WROOM-32 Pin Mapping to Turnout Addresses
+
+//   base address  1C  1T  2C  2T  3C  3T  4C  4T  5C  5T  6C  6T  7C  7T  8C  8T
+byte outputs[] = { 33, 32, 26, 25, 14, 27, 13, 12, 15,  4, 17, 16, 18,  5, 21, 19};
+
+#elif ATMEGA328_SMT_BOARD
+
+// this is the ATMega328p TQFP-32 Pin Mapping to Turnout Addresses
+
+//   base address  1C  1T  2C  2T  3C  3T  4C  4T  5C  5T  6C  6T  7C  7T  8C  8T
+byte outputs[] = {  6,  5,  8,  7, 10,  9, 12, 11, 13, 14, 17, 16, 19, 18,  4,  3};
+//   pins          D6  D5  D8  D7 D10  D9 D12 D11 D13  A0  A3  A2  A5  A4  D4  D3
+
+#else
+
+//   base address 1C 1T 2C 2T 3C 3T  4C 4T  5C  5T  6C  6T  7C  7T  8C  8T
+byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 17, 16, 19, 18};
+//   pins         D4 D3 D6 D5 D8 D7 D10 D9 D12 D11  A0 D13  A3  A2  A5  A4
+
 #endif
 
 NmraDcc  Dcc ;
@@ -117,9 +140,20 @@ uint16_t BaseTurnoutAddress;
  * Rosscoe Train functions and variables
  */
 // for address learning mode
+#ifdef LEARNING
+
+#ifdef ARDUINO_ARCH_ESP32
+int LEARNINGBUTTON = 2;    // pin 
+#else
 int LEARNINGBUTTON = A6;    // pin A6
-#define LEDCONTROL LED_BUILTIN
+#endif
+
 int learningMode = LOW;
+#endif
+
+#ifndef ARDUINO_ARCH_ESP32
+#define LEDCONTROL LED_BUILTIN
+#endif
 
 // buffer to hold serial commands
 String readString;

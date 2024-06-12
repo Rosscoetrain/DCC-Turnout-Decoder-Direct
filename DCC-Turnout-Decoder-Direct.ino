@@ -40,7 +40,7 @@
  * RT end
  */
 
-
+/*
 // This function is called whenever a normal DCC Turnout Packet is received
 void notifyDccAccTurnoutOutput( uint16_t Addr, uint8_t Direction, uint8_t OutputPower )
 {
@@ -152,6 +152,7 @@ void initPinPulser(void)
 
 #endif
 }
+*/
 
 void setup()
 {
@@ -245,9 +246,13 @@ void loop()
 
   learningbuttonVal = dr(LEARNINGBUTTON);
 
-  if (learningbuttonOldval != learningbuttonVal) {
+  if (learningbuttonOldval != learningbuttonVal)
+   {
     learningMode = learningbuttonVal;
+#ifndef ARDUINO_ARCH_ESP32
     if (learningMode == HIGH) showAcknowledge(3);
+#endif
+
    }
   learningbuttonOldval = learningbuttonVal;
 #endif
@@ -271,6 +276,11 @@ void loop()
    } 
 
 }
+
+/*
+ *  DCC functions
+*/
+
 
 void notifyCVChange(uint16_t CV, uint8_t Value)
 {

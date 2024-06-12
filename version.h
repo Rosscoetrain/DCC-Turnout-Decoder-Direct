@@ -18,8 +18,12 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define VERSION "0.0.3"
+#define VERSION "1.0.1"
 
+// 1.0.1  - added board serial number
+// 1.0.0  - initial release
+
+// 0.0.4  - added ESP32 build
 // 0.0.3  - added CV control of each output for pulse length and
 //          active output state
 // 0.0.2  - added serial commands and learning mode
