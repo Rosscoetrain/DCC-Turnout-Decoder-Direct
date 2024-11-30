@@ -567,7 +567,7 @@ void initPinPulser(void)
 // read the CV's for each address
   for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
   {
-    onMs[i] = Dcc.getCV( 33 + ( i * 2 ) ) * 10;
+    onMs[i] = Dcc.getCV( 33 + ( i * 2 ) ) * 100;
     activeOutputState[i]  = Dcc.getCV( 34 + ( i * 2 ) );
 #ifdef DEBUG_MSG
     Serial.print(F(" i : "));Serial.print(i);

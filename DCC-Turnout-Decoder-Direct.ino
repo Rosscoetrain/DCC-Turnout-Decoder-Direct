@@ -172,7 +172,11 @@ void setup()
 #else
   Dcc.pin(0, DCC_PIN, 1);
 #endif
-  
+
+#ifdef ENABLE_DCC_ACK
+  pinMode(ENABLE_DCC_ACK, OUTPUT);
+#endif
+
   // Call the main DCC Init function to enable the DCC Receiver
   Dcc.init( MAN_ID_DIY, DCC_DECODER_VERSION_NUM, FLAGS_OUTPUT_ADDRESS_MODE | FLAGS_DCC_ACCESSORY_DECODER, 0 );
 

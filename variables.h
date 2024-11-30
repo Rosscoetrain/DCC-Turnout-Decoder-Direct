@@ -106,15 +106,23 @@ uint8_t FactoryDefaultCVIndex = 0;
 byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 11, 12, 14, 13, 17, 16, 19, 18};
 //   pins         D4 D3 D6 D5 D8 D7 D10 D9 D11 D12  A0 D13  A3  A2  A5  A4
 
-#elif ARDUINO_ARCH_ESP32
+#elif defined(KATO_SMT_BOARD)
 
+//   base address 1C 1T 2C 2T 3C 3T  4C  4T  5C 5T  6C  6T  7C  7T  8C  8T
+byte outputs[] = { 3, 4, 5, 6, 7, 8, 12, 11, 10, 9, 13, 14, 16, 17, 18, 19};
+//   pins         D3 D4 D5 D6 D7 D8 D12 D11 D10 D9 D13  A0  A2  A3  A4  A5
+
+#elif defined(ARDUINO_ARCH_ESP32)
+
+#warning "Build for ESP32"
 // this is the ESP32-WROOM-32 Pin Mapping to Turnout Addresses
 
 //   base address  1C  1T  2C  2T  3C  3T  4C  4T  5C  5T  6C  6T  7C  7T  8C  8T
 byte outputs[] = { 33, 32, 26, 25, 14, 27, 13, 12, 15,  4, 17, 16, 18,  5, 21, 19};
 
-#elif ATMEGA328_SMT_BOARD
+#elif defined(ATMEGA328P_SMT_BOARD)
 
+#warning "Building for ATMEGA328P SMT Board"
 // this is the ATMega328p TQFP-32 Pin Mapping to Turnout Addresses
 
 //   base address  1C  1T  2C  2T  3C  3T  4C  4T  5C  5T  6C  6T  7C  7T  8C  8T

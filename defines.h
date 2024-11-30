@@ -25,7 +25,7 @@
 
 // this is the serial number for the board
 //
-#define SERIAL_NUMBER 4
+#define SERIAL_NUMBER 999
 
 
 
@@ -42,7 +42,7 @@
 #define NOTIFY_TURNOUT_MSG
 
 // You can also print other Debug Messages uncommenting the line below
-//#define DEBUG_MSG
+#define DEBUG_MSG
 
 // Un-Comment the line below to include learning function
 #define LEARNING
@@ -55,10 +55,18 @@
 #define ENABLE_DCC_ACK  15  // This is A1 on the Iowa Scaled Engineering ARD-DCCSHIELD DCC Shield
 #endif
 
+
 // Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_SMT with Arduino Nano board.
 #define NANO_SMT_BOARD
+
 // Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_SMT with ATMega328p TQFP-32 board.
+//#ifdef ATmega328P_TQFP32
 //#define ATMEGA328P_SMT_BOARD
+//#endif
+
+// Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_KATO with Arduino Nano board.
+//#define KATO_SMT_BOARD
+
 
 
 // Un-Comment the line below to use a single output pulse time.
