@@ -156,10 +156,13 @@ void initPinPulser(void)
 
 void setup()
 {
+#ifdef ENABLE_SERIAL
+  
   Serial.begin(115200);
   uint8_t maxWaitLoops = 255;
   while(!Serial && maxWaitLoops--)
     delay(20);
+#endif
     
   // Setup which External Interrupt, the Pin it's associated with that we're using and enable the Pull-Up
   // Many Arduino Cores now support the digitalPinToInterrupt() function that makes it easier to figure out the
@@ -180,6 +183,8 @@ void setup()
   // Call the main DCC Init function to enable the DCC Receiver
   Dcc.init( MAN_ID_DIY, DCC_DECODER_VERSION_NUM, FLAGS_OUTPUT_ADDRESS_MODE | FLAGS_DCC_ACCESSORY_DECODER, 0 );
 
+#ifdef ENABLE_SERIAL
+
 //#ifdef DEBUG_MSG
 //  Serial.print("\nNMRA DCC 8-Turnout Accessory Decoder. Ver: "); Serial.println(DCC_DECODER_VERSION_NUM,DEC);
   Serial.print("Rosscoe Train DCC 8 Turnout Accessory Decoder. ");
@@ -194,11 +199,14 @@ void setup()
   
   Serial.println();
 
+#endif
 
 //#endif
 
 #ifdef FORCE_RESET_FACTORY_DEFAULT_CV
+#ifdef ENABLE_SERIAL
   Serial.println("Resetting CVs to Factory Defaults");
+#endif
   notifyCVResetFactoryDefault(); 
 #endif
 
@@ -261,7 +269,7 @@ void loop()
   learningbuttonOldval = learningbuttonVal;
 #endif
 
-
+#ifdef ENABLE_SERIAL
     // see if there are serial commands
   readString="";              //empty for next input
 
@@ -278,6 +286,7 @@ void loop()
    {
     doSerialCommand(readString);
    } 
+#endif
 
 }
 

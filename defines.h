@@ -33,19 +33,26 @@
 // defined in the FactoryDefaultCVs below on Start-Up
 // THIS NEEDS to be un-commented and uploaded once to setup the eeprom
 // after uploading comment out the line and upload again for normal operation
-//#define FORCE_RESET_FACTORY_DEFAULT_CV
+#define FORCE_RESET_FACTORY_DEFAULT_CV
 
+// Un-Comment the line belwo to include serial commands
+#define ENABLE_SERIAL
+
+#ifdef ENABLE_SERIAL
+// **** un-comment ENABLE_SERIAL above to use the following
 // You can print every DCC packet by un-commenting the line below
 //#define NOTIFY_DCC_MSG
 
 // You can print every notifyDccAccTurnoutOutput call-back by un-commenting the line below
-#define NOTIFY_TURNOUT_MSG
+//#define NOTIFY_TURNOUT_MSG
 
 // You can also print other Debug Messages uncommenting the line below
-#define DEBUG_MSG
+//#define DEBUG_MSG
+#endif    // ENABLE_SERIAL
 
 // Un-Comment the line below to include learning function
 #define LEARNING
+
 
 // Un-Comment the lines below to Enable DCC ACK for Service Mode Programming Read CV Capablilty 
 

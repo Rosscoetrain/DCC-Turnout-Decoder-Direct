@@ -186,10 +186,12 @@ PP_State PinPulser::process(void)
 #ifndef SINGLE_PULSE
 void PinPulser::printArrays()
  {
+#ifdef ENABLE_SERIAL
   for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
    {
     Serial.print(F(" output : "));Serial.print(i+1);Serial.print(F(" onMs : "));Serial.print(onMs[i]);Serial.print(F(" activeOutputState : "));Serial.println(activeOutputState[i]);
    }
+#endif
  }
 
 

@@ -77,6 +77,8 @@ void showAcknowledge(int nb) {
 void(* resetFunc) (void) = 0;                     // declare reset function at address 0
 
 
+#ifdef ENABLE_SERIAL
+
 void doSerialCommand(String readString)
  {
 //  byte p = 0;
@@ -494,6 +496,7 @@ void doSerialCommand(String readString)
  }
 
 #endif
+#endif // ENABLE_SERIAL
 
 
 // This function is called whenever a normal DCC Turnout Packet is received
@@ -578,12 +581,14 @@ void initPinPulser(void)
   }
 #endif
 
+#ifdef ENABLE_SERIAL
 //#ifdef DEBUG_MSG
   Serial.print(F("initPinPulser: DCC Turnout Base Address: ")); Serial.print(BaseTurnoutAddress, DEC);
   Serial.print(F(" CDU Recharge: ")); Serial.println(cduRechargeMs);
 #ifdef SINGLE_PULSE
   Serial.print(F(" Active Pulse: ")); Serial.print(onMs);  
   Serial.print(F("ms Active Output State: ")); Serial.println(activeOutputState ? "HIGH" : "LOW" );
+#endif
 #endif
 //#endif  
 
