@@ -33,9 +33,9 @@
 // defined in the FactoryDefaultCVs below on Start-Up
 // THIS NEEDS to be un-commented and uploaded once to setup the eeprom
 // after uploading comment out the line and upload again for normal operation
-#define FORCE_RESET_FACTORY_DEFAULT_CV
+//#define FORCE_RESET_FACTORY_DEFAULT_CV
 
-// Un-Comment the line belwo to include serial commands
+// Un-Comment the line below to include serial commands
 #define ENABLE_SERIAL
 
 #ifdef ENABLE_SERIAL
@@ -64,7 +64,7 @@
 
 
 // Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_SMT with Arduino Nano board.
-#define NANO_SMT_BOARD
+//#define NANO_SMT_BOARD
 
 // Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_SMT with ATMega328p TQFP-32 board.
 //#ifdef ATmega328P_TQFP32
@@ -74,6 +74,11 @@
 // Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_KATO with Arduino Nano board.
 //#define KATO_SMT_BOARD
 
+#ifdef KATO_SMT_BOARD
+
+#warning "Build for Kato"
+
+#endif
 
 
 // Un-Comment the line below to use a single output pulse time.

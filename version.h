@@ -18,8 +18,10 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define VERSION "1.0.1"
+#define VERSION "1.1.0"
 
+// 1.1.0  - add Kato, Rokuhan, Tortoise capability
+// 1.0.2  - add ENABLE_SERIAL define
 // 1.0.1  - added board serial number
 // 1.0.0  - initial release
 

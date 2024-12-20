@@ -71,13 +71,14 @@ void showAcknowledge(int nb) {
 #endif
 
 
-#include "StringSplitter.h"
 
 
 void(* resetFunc) (void) = 0;                     // declare reset function at address 0
 
 
 #ifdef ENABLE_SERIAL
+
+#include "StringSplitter.h"
 
 void doSerialCommand(String readString)
  {
