@@ -74,11 +74,6 @@
 // Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_KATO with Arduino Nano board.
 //#define KATO_SMT_BOARD
 
-#ifdef KATO_SMT_BOARD
-
-#warning "Build for Kato"
-
-#endif
 
 
 // Un-Comment the line below to use a single output pulse time.

@@ -86,8 +86,8 @@ CVPair FactoryDefaultCVs [] =
   {48, ACTIVE_OUTPUT_STATE},
 #endif
 
-  {CV_ACCESSORY_DECODER_SERIAL_LSB, uint8_t(SERIAL_NUMBER - (SERIAL_NUMBER * 256))},
   {CV_ACCESSORY_DECODER_SERIAL_MSB, uint8_t(SERIAL_NUMBER / 256)},
+  {CV_ACCESSORY_DECODER_SERIAL_LSB, uint8_t(SERIAL_NUMBER - ((SERIAL_NUMBER / 256) * 256))},
   
 
 };
@@ -107,6 +107,8 @@ byte outputs[] = { 4, 3, 6, 5, 8, 7, 10, 9, 11, 12, 14, 13, 17, 16, 19, 18};
 //   pins         D4 D3 D6 D5 D8 D7 D10 D9 D11 D12  A0 D13  A3  A2  A5  A4
 
 #elif defined(KATO_SMT_BOARD)
+
+#warning "Build for Kato"
 
 //   base address 1C 1T 2C 2T 3C 3T  4C  4T  5C 5T  6C  6T  7C  7T  8C  8T
 byte outputs[] = { 3, 4, 5, 6, 7, 8, 12, 11, 10, 9, 13, 14, 16, 17, 18, 19};
