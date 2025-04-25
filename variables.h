@@ -131,6 +131,15 @@ byte outputs[] = { 33, 32, 26, 25, 14, 27, 13, 12, 15,  4, 17, 16, 18,  5, 21, 1
 byte outputs[] = {  6,  5,  8,  7, 10,  9, 12, 11, 13, 14, 17, 16, 19, 18,  4,  3};
 //   pins          D6  D5  D8  D7 D10  D9 D12 D11 D13  A0  A3  A2  A5  A4  D4  D3
 
+#elif defined(ATMEGA328P_SMT_BOARD_KATO)
+
+#warning "Building for ATMEGA328P SMT Board Kato"
+// this is the ATMega328p TQFP-32 Pin Mapping to Turnout Addresses
+
+//   base address  1C  1T  2C  2T  3C  3T  4C  4T  5C  5T  6C  6T  7C  7T  8C  8T
+byte outputs[] = {  6,  5,  8,  7, 10,  9, 12, 11, 14, 13, 17, 16, 19, 18,  4,  3};
+//   pins          D6  D5  D8  D7 D10  D9 D12 D11  A0 D13  A3  A2  A5  A4  D4  D3
+
 #else
 
 //   base address 1C 1T 2C 2T 3C 3T  4C 4T  5C  5T  6C  6T  7C  7T  8C  8T

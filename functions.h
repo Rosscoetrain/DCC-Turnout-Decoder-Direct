@@ -500,6 +500,72 @@ void doSerialCommand(String readString)
 #endif // ENABLE_SERIAL
 
 
+void initPinPulser(void)
+{
+//  BaseTurnoutAddress = (((Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_MSB) * 64) + Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_LSB) - 1) * 4) + 1  ;
+  BaseTurnoutAddress = (((Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_MSB) * 256) + Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_LSB) - 1) * 4) + 1  ;
+
+  uint16_t cduRechargeMs     = Dcc.getCV(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME) * 10;
+
+#ifdef SINGLE_PULSE
+  onMs              = Dcc.getCV(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME) * 10;
+  activeOutputState = Dcc.getCV(CV_ACCESSORY_DECODER_ACTIVE_STATE);
+#else
+//  uint16_t onMs[NUM_TURNOUTS] = {};
+//  uint8_t activeOutputState[NUM_TURNOUTS] = {};
+// read the CV's for each address
+  for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
+  {
+    onMs[i] = Dcc.getCV( 33 + ( i * 2 ) ) * 10;
+    activeOutputState[i]  = Dcc.getCV( 34 + ( i * 2 ) );
+#ifdef DEBUG_MSG
+    Serial.print(F(" i : "));Serial.print(i);
+    Serial.print(F(" onMs : "));Serial.print(onMs[i]);
+    Serial.print(F(" activeOutputState : "));Serial.println(activeOutputState[i]);
+#endif
+
+  }
+#endif
+
+#ifdef ENABLE_SERIAL
+//#ifdef DEBUG_MSG
+  Serial.print(F("initPinPulser: DCC Turnout Base Address: ")); Serial.print(BaseTurnoutAddress, DEC);
+  Serial.print(F(" CDU Recharge: ")); Serial.println(cduRechargeMs);
+#ifdef SINGLE_PULSE
+  Serial.print(F(" Active Pulse: ")); Serial.print(onMs);  
+  Serial.print(F("ms Active Output State: ")); Serial.println(activeOutputState ? "HIGH" : "LOW" );
+#endif
+#endif
+//#endif  
+
+  // Step through all the Turnout Driver pins setting them to OUTPUT and NOT Active State
+  for(uint8_t i = 0; i < (NUM_TURNOUTS * 2); i++)
+  {
+#ifdef SINGLE_PULSE
+  	digitalWrite(outputs[i], !activeOutputState); // Set the Output Inactive before the direction so the 
+#else
+    digitalWrite(outputs[i], !activeOutputState[i / 2]); // Set the Output Inactive before the direction so the 
+#endif
+  	pinMode( outputs[i], OUTPUT );                // Pin doesn't momentarily pulse the wrong state
+	}
+
+  // Init the PinPulser with the new settings 
+#ifdef SINGLE_PULSE
+  pinPulser.init(onMs, cduRechargeMs, activeOutputState);
+#else
+  pinPulser.init(onMs, cduRechargeMs, activeOutputState, outputs);
+
+  pinPulser.printArrays();
+
+#endif
+}
+ 
+
+/*
+ *  DCC functions
+*/
+
+
 // This function is called whenever a normal DCC Turnout Packet is received
 void notifyDccAccTurnoutOutput( uint16_t Addr, uint8_t Direction, uint8_t OutputPower )
 {
@@ -555,63 +621,56 @@ void notifyDccAccTurnoutOutput( uint16_t Addr, uint8_t Direction, uint8_t Output
 }
 
 
-void initPinPulser(void)
+void notifyCVChange(uint16_t CV, uint8_t Value)
 {
-//  BaseTurnoutAddress = (((Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_MSB) * 64) + Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_LSB) - 1) * 4) + 1  ;
-  BaseTurnoutAddress = (((Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_MSB) * 256) + Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_LSB) - 1) * 4) + 1  ;
-
-  uint16_t cduRechargeMs     = Dcc.getCV(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME) * 10;
-
-#ifdef SINGLE_PULSE
-  onMs              = Dcc.getCV(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME) * 10;
-  activeOutputState = Dcc.getCV(CV_ACCESSORY_DECODER_ACTIVE_STATE);
-#else
-//  uint16_t onMs[NUM_TURNOUTS] = {};
-//  uint8_t activeOutputState[NUM_TURNOUTS] = {};
-// read the CV's for each address
-  for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
-  {
-    onMs[i] = Dcc.getCV( 33 + ( i * 2 ) ) * 100;
-    activeOutputState[i]  = Dcc.getCV( 34 + ( i * 2 ) );
 #ifdef DEBUG_MSG
-    Serial.print(F(" i : "));Serial.print(i);
-    Serial.print(F(" onMs : "));Serial.print(onMs[i]);
-    Serial.print(F(" activeOutputState : "));Serial.println(activeOutputState[i]);
-#endif
+  Serial.print("notifyCVChange: CV: ") ;
+  Serial.print(CV,DEC) ;
+  Serial.print(" Value: ") ;
+  Serial.println(Value, DEC) ;
+#endif  
 
-  }
-#endif
+  Value = Value;  // Silence Compiler Warnings...
 
-#ifdef ENABLE_SERIAL
-//#ifdef DEBUG_MSG
-  Serial.print(F("initPinPulser: DCC Turnout Base Address: ")); Serial.print(BaseTurnoutAddress, DEC);
-  Serial.print(F(" CDU Recharge: ")); Serial.println(cduRechargeMs);
-#ifdef SINGLE_PULSE
-  Serial.print(F(" Active Pulse: ")); Serial.print(onMs);  
-  Serial.print(F("ms Active Output State: ")); Serial.println(activeOutputState ? "HIGH" : "LOW" );
-#endif
-#endif
-//#endif  
-
-  // Step through all the Turnout Driver pins setting them to OUTPUT and NOT Active State
-  for(uint8_t i = 0; i < (NUM_TURNOUTS * 2); i++)
-  {
-#ifdef SINGLE_PULSE
-  	digitalWrite(outputs[i], !activeOutputState); // Set the Output Inactive before the direction so the 
-#else
-    digitalWrite(outputs[i], !activeOutputState[i / 2]); // Set the Output Inactive before the direction so the 
-#endif
-  	pinMode( outputs[i], OUTPUT );                // Pin doesn't momentarily pulse the wrong state
-	}
-
-  // Init the PinPulser with the new settings 
-#ifdef SINGLE_PULSE
-  pinPulser.init(onMs, cduRechargeMs, activeOutputState);
-#else
-  pinPulser.init(onMs, cduRechargeMs, activeOutputState, outputs);
-
-  pinPulser.printArrays();
-
-#endif
+  if((CV == CV_ACCESSORY_DECODER_ADDRESS_MSB) || (CV == CV_ACCESSORY_DECODER_ADDRESS_LSB) ||
+		 (CV == CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME) || (CV == CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME) || (CV == CV_ACCESSORY_DECODER_ACTIVE_STATE))
+		initPinPulser();	// Some CV we care about changed so re-init the PinPulser with the new CV settings
 }
- 
+
+void notifyCVResetFactoryDefault()
+{
+  // Make FactoryDefaultCVIndex non-zero and equal to num CV's to be reset 
+  // to flag to the loop() function that a reset to Factory Defaults needs to be done
+  FactoryDefaultCVIndex = sizeof(FactoryDefaultCVs)/sizeof(CVPair);
+};
+
+// This function is called by the NmraDcc library when a DCC ACK needs to be sent
+// Calling this function should cause an increased 60ma current drain on the power supply for 6ms to ACK a CV Read 
+#ifdef  ENABLE_DCC_ACK
+void notifyCVAck(void)
+{
+#ifdef DEBUG_MSG
+  Serial.println("notifyCVAck") ;
+#endif
+  // Configure the DCC CV Programing ACK pin for an output
+  pinMode( ENABLE_DCC_ACK, OUTPUT );
+
+  // Generate the DCC ACK 60mA pulse
+  digitalWrite( ENABLE_DCC_ACK, HIGH );
+  delay( 10 );  // The DCC Spec says 6ms but 10 makes sure... ;)
+  digitalWrite( ENABLE_DCC_ACK, LOW );
+}
+#endif
+
+#ifdef  NOTIFY_DCC_MSG
+void notifyDccMsg( DCC_MSG * Msg)
+{
+  Serial.print("notifyDccMsg: ") ;
+  for(uint8_t i = 0; i < Msg->Size; i++)
+  {
+    Serial.print(Msg->Data[i], HEX);
+    Serial.write(' ');
+  }
+  Serial.println();
+}
+#endif

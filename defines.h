@@ -24,8 +24,10 @@
 
 
 // this is the serial number for the board
-//
-#define SERIAL_NUMBER 999
+
+#warning "Have you set the serial number"
+
+#define SERIAL_NUMBER 20
 
 
 
@@ -44,7 +46,7 @@
 //#define NOTIFY_DCC_MSG
 
 // You can print every notifyDccAccTurnoutOutput call-back by un-commenting the line below
-//#define NOTIFY_TURNOUT_MSG
+#define NOTIFY_TURNOUT_MSG
 
 // You can also print other Debug Messages uncommenting the line below
 //#define DEBUG_MSG
@@ -72,7 +74,7 @@
 //#endif
 
 // Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_KATO with Arduino Nano board.
-//#define KATO_SMT_BOARD
+#define KATO_SMT_BOARD
 
 
 

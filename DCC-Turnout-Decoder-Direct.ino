@@ -187,7 +187,11 @@ void setup()
 
 //#ifdef DEBUG_MSG
 //  Serial.print("\nNMRA DCC 8-Turnout Accessory Decoder. Ver: "); Serial.println(DCC_DECODER_VERSION_NUM,DEC);
+#ifdef KATO_SMT_BOARD
+  Serial.print("Rosscoe Train DCC 8 Turnout Accessory Decoder Kato. ");
+#else
   Serial.print("Rosscoe Train DCC 8 Turnout Accessory Decoder. ");
+#endif
 
   Serial.print(F("Version: "));
   Serial.print(versionBuffer[0]);
@@ -290,64 +294,6 @@ void loop()
 
 }
 
-/*
- *  DCC functions
-*/
-
-
-void notifyCVChange(uint16_t CV, uint8_t Value)
-{
-#ifdef DEBUG_MSG
-  Serial.print("notifyCVChange: CV: ") ;
-  Serial.print(CV,DEC) ;
-  Serial.print(" Value: ") ;
-  Serial.println(Value, DEC) ;
-#endif  
-
-  Value = Value;  // Silence Compiler Warnings...
-
-  if((CV == CV_ACCESSORY_DECODER_ADDRESS_MSB) || (CV == CV_ACCESSORY_DECODER_ADDRESS_LSB) ||
-		 (CV == CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME) || (CV == CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME) || (CV == CV_ACCESSORY_DECODER_ACTIVE_STATE))
-		initPinPulser();	// Some CV we care about changed so re-init the PinPulser with the new CV settings
-}
-
-void notifyCVResetFactoryDefault()
-{
-  // Make FactoryDefaultCVIndex non-zero and equal to num CV's to be reset 
-  // to flag to the loop() function that a reset to Factory Defaults needs to be done
-  FactoryDefaultCVIndex = sizeof(FactoryDefaultCVs)/sizeof(CVPair);
-};
-
-// This function is called by the NmraDcc library when a DCC ACK needs to be sent
-// Calling this function should cause an increased 60ma current drain on the power supply for 6ms to ACK a CV Read 
-#ifdef  ENABLE_DCC_ACK
-void notifyCVAck(void)
-{
-#ifdef DEBUG_MSG
-  Serial.println("notifyCVAck") ;
-#endif
-  // Configure the DCC CV Programing ACK pin for an output
-  pinMode( ENABLE_DCC_ACK, OUTPUT );
-
-  // Generate the DCC ACK 60mA pulse
-  digitalWrite( ENABLE_DCC_ACK, HIGH );
-  delay( 10 );  // The DCC Spec says 6ms but 10 makes sure... ;)
-  digitalWrite( ENABLE_DCC_ACK, LOW );
-}
-#endif
-
-#ifdef  NOTIFY_DCC_MSG
-void notifyDccMsg( DCC_MSG * Msg)
-{
-  Serial.print("notifyDccMsg: ") ;
-  for(uint8_t i = 0; i < Msg->Size; i++)
-  {
-    Serial.print(Msg->Data[i], HEX);
-    Serial.write(' ');
-  }
-  Serial.println();
-}
-#endif
 
 
   
