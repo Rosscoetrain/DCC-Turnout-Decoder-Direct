@@ -1,5 +1,5 @@
 /*
- * functions.h
+ * @file functions.h
  */
 
 /*

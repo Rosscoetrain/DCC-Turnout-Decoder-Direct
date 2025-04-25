@@ -1,5 +1,5 @@
 /*
- * defines.h
+ * @file defines.h
  */
 
 /*

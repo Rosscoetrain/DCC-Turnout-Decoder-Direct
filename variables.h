@@ -1,5 +1,5 @@
 /*
- * variables.h
+ * @file variables.h
  */
 
 /*

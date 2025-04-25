@@ -36,139 +36,21 @@
 #include "functions.h"
 
 
-/*
- * RT end
- */
-
-/*
-// This function is called whenever a normal DCC Turnout Packet is received
-void notifyDccAccTurnoutOutput( uint16_t Addr, uint8_t Direction, uint8_t OutputPower )
-{
-#ifdef  NOTIFY_TURNOUT_MSG
-  Serial.print("notifyDccAccTurnoutOutput: Turnout: ") ;
-  Serial.print(Addr,DEC) ;
-  Serial.print(" Direction: ");
-  Serial.print(Direction ? "Thrown" : "Closed") ;
-  Serial.print(" Output: ");
-  Serial.print(OutputPower ? "On" : "Off") ;
-#endif
-
-// check to see if in learning mode and update address
-
-#ifdef LEARNING
-  if (learningMode == HIGH) {
-
-//    int H = (Addr - 1) / 64;
-//    int L = Addr - (H * 64);
-    byte L = (Addr + 3) / 4;
-    byte H = (Addr + 3) / 1024;
-
-#ifdef DEBUG_MSG
-    Serial.println("");
-    Serial.print(F("Value = ")); Serial.println(Addr,DEC);
-    Serial.print(F(" H = ")); Serial.println(H,DEC);
-    Serial.print(F(" L = ")); Serial.println(L,DEC);
-#endif
-                  
-    Dcc.setCV(CV_ACCESSORY_DECODER_ADDRESS_MSB, H);
-    Dcc.setCV(CV_ACCESSORY_DECODER_ADDRESS_LSB, L);
-
-   }
-  else
-#endif
-
-   {
-    if(( Addr >= BaseTurnoutAddress ) && ( Addr < (BaseTurnoutAddress + NUM_TURNOUTS )) && OutputPower )
-     {
-      uint16_t pinIndex = ( (Addr - BaseTurnoutAddress) << 1 ) + Direction ;
-      pinPulser.addPin(outputs[pinIndex]);
-#ifdef  NOTIFY_TURNOUT_MSG
-      Serial.print(" Pin Index: ");
-      Serial.print(pinIndex,DEC);
-      Serial.print(" Pin: ");
-      Serial.print(outputs[pinIndex],DEC);
-#endif
-     }
-   }
-#ifdef  NOTIFY_TURNOUT_MSG
-  Serial.println();
-#endif
-}
-
-void initPinPulser(void)
-{
-//  BaseTurnoutAddress = (((Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_MSB) * 64) + Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_LSB) - 1) * 4) + 1  ;
-  BaseTurnoutAddress = (((Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_MSB) * 256) + Dcc.getCV(CV_ACCESSORY_DECODER_ADDRESS_LSB) - 1) * 4) + 1  ;
-
-  uint16_t cduRechargeMs     = Dcc.getCV(CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME) * 10;
-
-#ifdef SINGLE_PULSE
-  onMs              = Dcc.getCV(CV_ACCESSORY_DECODER_OUTPUT_PULSE_TIME) * 10;
-  activeOutputState = Dcc.getCV(CV_ACCESSORY_DECODER_ACTIVE_STATE);
-#else
-//  uint16_t onMs[NUM_TURNOUTS] = {};
-//  uint8_t activeOutputState[NUM_TURNOUTS] = {};
-// read the CV's for each address
-  for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
-  {
-    onMs[i] = Dcc.getCV( 33 + ( i * 2 ) ) * 10;
-    activeOutputState[i]  = Dcc.getCV( 34 + ( i * 2 ) );
-#ifdef DEBUG_MSG
-    Serial.print(F(" i : "));Serial.print(i);
-    Serial.print(F(" onMs : "));Serial.print(onMs[i]);
-    Serial.print(F(" activeOutputState : "));Serial.println(activeOutputState[i]);
-#endif
-
-  }
-#endif
-
-//#ifdef DEBUG_MSG
-  Serial.print(F("initPinPulser: DCC Turnout Base Address: ")); Serial.print(BaseTurnoutAddress, DEC);
-  Serial.print(F(" CDU Recharge: ")); Serial.println(cduRechargeMs);
-#ifdef SINGLE_PULSE
-  Serial.print(F(" Active Pulse: ")); Serial.print(onMs);  
-  Serial.print(F("ms Active Output State: ")); Serial.println(activeOutputState ? "HIGH" : "LOW" );
-#endif
-//#endif  
-
-  // Step through all the Turnout Driver pins setting them to OUTPUT and NOT Active State
-  for(uint8_t i = 0; i < (NUM_TURNOUTS * 2); i++)
-  {
-#ifdef SINGLE_PULSE
-  	digitalWrite(outputs[i], !activeOutputState); // Set the Output Inactive before the direction so the 
-#else
-    digitalWrite(outputs[i], !activeOutputState[i / 2]); // Set the Output Inactive before the direction so the 
-#endif
-  	pinMode( outputs[i], OUTPUT );                // Pin doesn't momentarily pulse the wrong state
-	}
-
-  // Init the PinPulser with the new settings 
-#ifdef SINGLE_PULSE
-  pinPulser.init(onMs, cduRechargeMs, activeOutputState);
-#else
-  pinPulser.init(onMs, cduRechargeMs, activeOutputState, outputs);
-
-  pinPulser.printArrays();
-
-#endif
-}
-*/
 
 void setup()
 {
 #ifdef ENABLE_SERIAL
-  
   Serial.begin(115200);
   uint8_t maxWaitLoops = 255;
   while(!Serial && maxWaitLoops--)
     delay(20);
 #endif
-    
+
+  setVersion();
+
   // Setup which External Interrupt, the Pin it's associated with that we're using and enable the Pull-Up
   // Many Arduino Cores now support the digitalPinToInterrupt() function that makes it easier to figure out the
   // Interrupt Number for the Arduino Pin number, which reduces confusion. 
-
-  setVersion();
 
 #ifdef digitalPinToInterrupt
   Dcc.pin(DCC_PIN, 0);
