@@ -59,14 +59,20 @@ void PinPulser::init(uint16_t onMs_[], uint16_t cduRechargeMs, uint8_t activeOut
 uint8_t PinPulser::addPin(uint8_t Pin)
 {
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+#else
   Serial.print(" PinPulser::addPin: "); Serial.print(Pin,DEC);
+#endif
 #endif
   for(uint8_t i = 0; i < PIN_PULSER_MAX_PINS; i++)
   {
     if(pinQueue[i] == Pin)
     {
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+#else
       Serial.print(F(" Already in Index: ")); Serial.println(i,DEC);
+#endif
 #endif
       return i;
     }
@@ -74,7 +80,10 @@ uint8_t PinPulser::addPin(uint8_t Pin)
     else if(pinQueue[i] == PIN_PULSER_SLOT_EMPTY)
     {
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+#else
       Serial.print(F(" pinQueue Index: ")); Serial.println(i,DEC);
+#endif
 #endif
       pinQueue[i] = Pin;
       process();
@@ -83,7 +92,10 @@ uint8_t PinPulser::addPin(uint8_t Pin)
   }  
 
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+#else
   Serial.println();
+#endif
 #endif
   return PIN_PULSER_SLOT_EMPTY;
 }
@@ -99,7 +111,10 @@ PP_State PinPulser::process(void)
 
 
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+#else
       Serial.print(F(" PinPulser::process: PP_IDLE: Pin: ")); Serial.println(pinQueue[0],DEC);
+#endif
 #endif
 
 #ifdef SINGLE_PULSE
@@ -108,15 +123,21 @@ PP_State PinPulser::process(void)
 #else
 
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+#else
       Serial.print(F(" PinPulser::process: PP_IDLE:  onMs: ")); Serial.println(getOnMs(pinQueue[0]),DEC);
       Serial.print(F(" activeOutputState : "));Serial.println(getActiveOutputState(pinQueue[0]));
+#endif
 #endif
 
       digitalWrite(pinQueue[0], getActiveOutputState(pinQueue[0]));
       targetMs = millis() + getOnMs(pinQueue[0]);
 
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+#else
       Serial.print(F(" millis : "));Serial.print(millis());Serial.print(F(" targetMs : "));Serial.println(targetMs);
+#endif
 #endif
 
 #endif
@@ -131,8 +152,11 @@ PP_State PinPulser::process(void)
     {
 
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+#else
       Serial.print(F(" now : "));Serial.print(now);Serial.print(F(" targetMs : "));Serial.println(targetMs);
       Serial.print(F(" PinPulser::process: PP_OUTPUT_ON_DELAY: Done Deactivate Pin: ")); Serial.println(pinQueue[0],DEC);
+#endif
 #endif
 
 #ifdef SINGLE_PULSE
@@ -154,7 +178,10 @@ PP_State PinPulser::process(void)
       {
 
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+#else
         Serial.print(F(" PinPulser::process: PIN_PULSER_SLOT_EMPTY: Done Deactivate Pin: ")); Serial.println(pinQueue[0],DEC);
+#endif
 #endif
 
 #ifdef SINGLE_PULSE
@@ -171,7 +198,11 @@ PP_State PinPulser::process(void)
       {
 
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+        Serial3.println(F(" PinPulser::process: PP_CDU_RECHARGE_DELAY - Now PP_IDLE"));
+#else
         Serial.println(F(" PinPulser::process: PP_CDU_RECHARGE_DELAY - Now PP_IDLE"));
+#endif
 #endif
 
         state = PP_IDLE;
@@ -189,7 +220,21 @@ void PinPulser::printArrays()
 #ifdef ENABLE_SERIAL
   for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
    {
-    Serial.print(F(" output : "));Serial.print(i+1);Serial.print(F(" onMs : "));Serial.print(onMs[i]);Serial.print(F(" activeOutputState : "));Serial.println(activeOutputState[i]);
+#ifdef ARDUINO_AVR_ATmega4809
+        Serial3.print(F(" output : "));
+        Serial3.print(i+1);
+        Serial3.print(F(" onMs : "));
+        Serial3.print(onMs[i]);
+        Serial3.print(F(" activeOutputState : "));
+        Serial3.println(activeOutputState[i]);
+#else
+        Serial.print(F(" output : "));
+        Serial.print(i+1);
+        Serial.print(F(" onMs : "));
+        Serial.print(onMs[i]);
+        Serial.print(F(" activeOutputState : "));
+        Serial.println(activeOutputState[i]);
+#endif
    }
 #endif
  }

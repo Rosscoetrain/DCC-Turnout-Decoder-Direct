@@ -140,6 +140,19 @@ byte outputs[] = {  6,  5,  8,  7, 10,  9, 12, 11, 13, 14, 17, 16, 19, 18,  4,  
 byte outputs[] = {  6,  5,  8,  7, 10,  9, 12, 11, 14, 13, 17, 16, 19, 18,  4,  3};
 //   pins          D6  D5  D8  D7 D10  D9 D12 D11  A0 D13  A3  A2  A5  A4  D4  D3
 
+#elif defined(ARDUINO_AVR_ATmega4809)
+
+#warning "Building for ATmega4809 SMT Board"
+
+// this is the ATMega4809 Pin Mapping to Turnout Addresses
+
+//TODO work out pin mapping based on pcb when developed.  Use 328p for now.
+
+//   base address  1C  1T  2C  2T  3C  3T  4C  4T  5C  5T  6C  6T  7C  7T  8C  8T
+byte outputs[] = {  6,  5,  8,  7, 10,  9, 12, 11, 14, 13, 17, 16, 19, 18,  4,  3};
+//   pins          D6  D5  D8  D7 D10  D9 D12 D11  A0 D13  A3  A2  A5  A4  D4  D3
+
+
 #else
 
 //   base address 1C 1T 2C 2T 3C 3T  4C 4T  5C  5T  6C  6T  7C  7T  8C  8T
@@ -168,10 +181,6 @@ int LEARNINGBUTTON = A6;    // pin A6
 #endif
 
 int learningMode = LOW;
-#endif
-
-#ifndef ARDUINO_ARCH_ESP32
-#define LEDCONTROL LED_BUILTIN
 #endif
 
 // buffer to hold serial commands

@@ -61,9 +61,12 @@
 #ifdef ARDUINO_ARCH_ESP32
 #define ENABLE_DCC_ACK  23  // This is IO23 on ESP32 WROOM   
 #else
+#ifdef ARDUINO_AVR_ATmega4809
+#define ENABLE_DCC_ACK  26  // TODO CONFIRM THIS ON PCB LAYOUT
+#else
 #define ENABLE_DCC_ACK  15  // This is A1 on the Iowa Scaled Engineering ARD-DCCSHIELD DCC Shield
 #endif
-
+#endif
 
 // Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_SMT with Arduino Nano board.
 //#define NANO_SMT_BOARD
@@ -74,17 +77,12 @@
 //#endif
 
 // Un-Comment the line below if this firemware is being used on the RT_Pulse_8_HP_KATO with Arduino Nano board.
-#define KATO_SMT_BOARD
-
-
+//#define KATO_SMT_BOARD
 
 // Un-Comment the line below to use a single output pulse time.
 // The pulse time will be the same for all addresses
 //
 //#define SINGLE_PULSE
-
-
-
 
 // Define the Arduino input Pin number for the DCC Signal 
 #ifdef ARDUINO_ARCH_ESP32
@@ -103,6 +101,17 @@
 #define DCC_DECODER_VERSION_NUM 10    // Set the Decoder Version - Used by JMRI to Identify the decoder
 
 
+#ifndef ARDUINO_ARCH_ESP32
+#ifdef ARDUINO_AVR_ATmega4809
+#define LEDCONTROL 39
+#else
+#define LEDCONTROL LED_BUILTIN
+#endif
+#endif
+
+
+
+
 // To set the Turnout Addresses for this board you need to change the CV values for CV1 (CV_ACCESSORY_DECODER_ADDRESS_LSB) and 
 // CV9 (CV_ACCESSORY_DECODER_ADDRESS_MSB) in the FactoryDefaultCVs structure below. The Turnout Addresses are defined as: 
 // Base Turnout Address is: ((((CV9 * 64) + CV1) - 1) * 4) + 1 
@@ -113,9 +122,13 @@
 #define CV_ACCESSORY_DECODER_CDU_RECHARGE_TIME 3  // CV for the delay in ms to allow a CDU to recharge
 #define CV_ACCESSORY_DECODER_ACTIVE_STATE      4  // CV to define the ON Output State 
 
+#ifdef ARDUINO_AVR_ATmega4809
+#define CV_ACCESSORY_DECODER_SERIAL_LSB 254       // lsb for board serial number  note ATmega4809 has only 256 bytes of eeprom
+#define CV_ACCESSORY_DECODER_SERIAL_MSB 255       // msb for board serial number
+#else
 #define CV_ACCESSORY_DECODER_SERIAL_LSB 255       // lsb for board serial number
 #define CV_ACCESSORY_DECODER_SERIAL_MSB 256       // msb for board serial number
-
+#endif
 
 #endif
 

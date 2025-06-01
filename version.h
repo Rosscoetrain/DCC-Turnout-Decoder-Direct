@@ -23,8 +23,9 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define VERSION "1.1.0"
+#define VERSION "1.1.1"
 
+// 1.1.1  - add ATmega4809 build this is for future expansion
 // 1.1.0  - add Kato, Rokuhan, Tortoise capability
 // 1.0.2  - add ENABLE_SERIAL define
 // 1.0.1  - added board serial number

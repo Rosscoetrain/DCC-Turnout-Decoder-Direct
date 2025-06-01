@@ -40,10 +40,17 @@
 void setup()
 {
 #ifdef ENABLE_SERIAL
+#ifdef ARDUINO_AVR_ATmega4809
+  Serial3.begin(115200);
+  uint8_t maxWaitLoops = 255;
+  while(!Serial3 && maxWaitLoops--)
+    delay(20);
+#else
   Serial.begin(115200);
   uint8_t maxWaitLoops = 255;
   while(!Serial && maxWaitLoops--)
     delay(20);
+#endif
 #endif
 
   setVersion();
@@ -66,38 +73,50 @@ void setup()
   Dcc.init( MAN_ID_DIY, DCC_DECODER_VERSION_NUM, FLAGS_OUTPUT_ADDRESS_MODE | FLAGS_DCC_ACCESSORY_DECODER, 0 );
 
 #ifdef ENABLE_SERIAL
-
-//#ifdef DEBUG_MSG
-//  Serial.print("\nNMRA DCC 8-Turnout Accessory Decoder. Ver: "); Serial.println(DCC_DECODER_VERSION_NUM,DEC);
+#ifdef ARDUINO_AVR_ATmega4809
+#ifdef KATO_SMT_BOARD
+  Serial3.print("Rosscoe Train DCC 8 Turnout Accessory Decoder Kato. ");
+#else
+  Serial3.print("Rosscoe Train DCC 8 Turnout Accessory Decoder. ");
+#endif
+  Serial3.print(F("Version: "));
+  Serial3.print(versionBuffer[0]);
+  Serial3.print(F("."));
+  Serial3.print(versionBuffer[1]);
+  Serial3.print(F("."));
+  Serial3.println(versionBuffer[2]);
+  Serial3.println();
+#else
 #ifdef KATO_SMT_BOARD
   Serial.print("Rosscoe Train DCC 8 Turnout Accessory Decoder Kato. ");
 #else
   Serial.print("Rosscoe Train DCC 8 Turnout Accessory Decoder. ");
 #endif
-
   Serial.print(F("Version: "));
   Serial.print(versionBuffer[0]);
   Serial.print(F("."));
   Serial.print(versionBuffer[1]);
   Serial.print(F("."));
   Serial.println(versionBuffer[2]);
-
-  
   Serial.println();
-
 #endif
-
-//#endif
+#endif
 
 #ifdef FORCE_RESET_FACTORY_DEFAULT_CV
 #ifdef ENABLE_SERIAL
+#ifdef ARDUINO_AVR_ATmega4809
+  Serial3.println("Resetting CVs to Factory Defaults");
+#else
   Serial.println("Resetting CVs to Factory Defaults");
 #endif
   notifyCVResetFactoryDefault(); 
 #endif
+#endif
 
   if( FactoryDefaultCVIndex == 0)	// Not forcing a reset CV Reset to Factory Defaults so initPinPulser
-	  initPinPulser();  
+   {
+	  initPinPulser();
+   }
 }
 
 void loop()
@@ -117,7 +136,11 @@ void loop()
     uint16_t cv = FactoryDefaultCVs[FactoryDefaultCVIndex].CV;
     uint8_t val = FactoryDefaultCVs[FactoryDefaultCVIndex].Value;
 #ifdef DEBUG_MSG
+#ifdef ARDUINO_AVR_ATmega4809
+    Serial3.print("loop: Write Default CV: "); Serial.print(cv,DEC); Serial.print(" Value: "); Serial.println(val,DEC);
+#else
     Serial.print("loop: Write Default CV: "); Serial.print(cv,DEC); Serial.print(" Value: "); Serial.println(val,DEC);
+#endif
 #endif     
     Dcc.setCV( cv, val );
     
@@ -159,13 +182,21 @@ void loop()
     // see if there are serial commands
   readString="";              //empty for next input
 
+#ifdef ARDUINO_AVR_ATmega4809
+  while (Serial3.available())
+   {
+    char c = Serial3.read();     //gets one byte from serial buffer
+    readString += c;            //makes the string readString
+    delay(10);                   //slow looping to allow buffer to fill with next character
+   }
+#else
   while (Serial.available())
    {
     char c = Serial.read();     //gets one byte from serial buffer
     readString += c;            //makes the string readString
     delay(10);                   //slow looping to allow buffer to fill with next character
    }
-
+#endif
   // act on serial commands
 
   if (readString.length() >0)
