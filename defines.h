@@ -27,7 +27,7 @@
 
 #warning "Have you set the serial number"
 
-#define SERIAL_NUMBER 20
+#define SERIAL_NUMBER 40
 
 
 
