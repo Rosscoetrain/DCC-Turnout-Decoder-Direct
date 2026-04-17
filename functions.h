@@ -70,6 +70,21 @@ void showAcknowledge(int nb) {
 }
 #endif
 
+void showUserCVs()
+ {
+  for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
+   {
+    Serial.print(F("CV"));
+    Serial.print(33 + (i * 2));
+    Serial.print(F(" = "));
+    Serial.print(Dcc.getCV(33 + (i * 2)));
+    Serial.print("    ");
+    Serial.print(F("CV"));
+    Serial.print(34 + (i * 2));
+    Serial.print(F(" = "));
+    Serial.println(Dcc.getCV(34 + (i * 2)));
+  }
+ }
 
 
 
@@ -224,18 +239,22 @@ if (readString == "<Z>")
       Serial.print(F(" = "));
       Serial.println(Dcc.getCV(CV_ACCESSORY_DECODER_ACTIVE_STATE));
 #else
+      showUserCVs();
+
+/*
       for(uint8_t i = 0; i < NUM_TURNOUTS; i++)
        {
         Serial.print(F("CV"));
         Serial.print(33 + (i * 2));
         Serial.print(F(" = "));
-        Serial.println(Dcc.getCV(33 + (i * 2)));
-
+        Serial.print(Dcc.getCV(33 + (i * 2)));
+        Serial.print("    ");
         Serial.print(F("CV"));
         Serial.print(34 + (i * 2));
         Serial.print(F(" = "));
         Serial.println(Dcc.getCV(34 + (i * 2)));
        }
+*/
 #endif
 #endif
 
@@ -272,6 +291,11 @@ if (readString == "<Z>")
           splitter = NULL;
          }
 
+
+        if (readString.startsWith("<U"))
+         {
+          showUserCVs();
+         }
 
          // command to throw turnout <T address>
 
