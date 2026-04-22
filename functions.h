@@ -321,6 +321,12 @@ if (readString == "<Z>")
           splitter = NULL;
          }
 
+        if (readString.startsWith("<A>"))
+         {
+          Serial.println(BaseTurnoutAddress);
+          readString = "";
+         }
+
          // command to set address <A address>
          // address will be adjusted to the correct base turnout address
          // eg if address is 2 this will be corrected to 1 as the address are groups of 8 with an offset of 4
