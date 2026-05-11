@@ -1,5 +1,12 @@
 # DCC-Turnout-Decoder-Direct
 
+THIS REPO IS DEPRICATED PLEASE USE THIS INSTEAD
+
+https://github.com/Rosscoetrain/RT_Turnout_Decoder
+
+Kept for reference only.
+
+========================================================================================
 
 Code is based on the NMRA Turnout Decoder pulsed 8 example.
 
